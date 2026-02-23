@@ -1,0 +1,82 @@
+BootStrap: docker
+From: continuumio/miniconda3:latest
+
+%labels
+    Author "Nathaniel Berney"
+    Version "1.0.0"
+    Description "ClassicalGSG Microservice - ClassicalGSG property prediction using ClassicalGSG models"
+    HelpURL "https://github.com/NathanielBerney/ClassicalGSG-Microservice"
+
+    
+%help
+    ClassicalGSG Microservice Container
+
+    This container runs a FastAPI microservice for predicting BBB, GIA, TPSA, WLogP properties.
+
+    Usage:
+        singularity run classicalgsg.sif
+        singularity run --env PORT=1800 classicalgsg.sif
+        singularity shell classicalgsg.sif
+    
+    Environment Variables:
+        PORT: Server port (default: 1800)
+        HOST: Server host (default: 0.0.0.0)
+        RELOAD: Enable auto-reload (default:true)
+
+%environment 
+    export PYTHONNOUSERSITE=1
+    export PATH="/opt/conda/bin:$PATH"
+    export PYTHONUNBUFFERED=1
+    export PYTHONPATH=/app
+    export PORT=10000
+    export HOST=0.0.0.0
+    export DOCKER_BUILDKIT=1
+    export CONDA_PREFIX=/opt/conda/envs/classicalgsg_env
+    export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
+%files
+    ClassicalGSG_handler.py /app/ClassicalGSG_handler.py
+    environment.yml /app/environment.yml
+    main.py /app/main.py
+    classicalgsg /app/classicalgsg
+
+%post 
+    mkdir -p /app
+    # Use patchelf instead of execstack
+    apt-get update && apt-get install -y git patchelf
+
+    # 1. Create the environment
+    /opt/conda/bin/conda env create -f /app/environment.yml -y
+
+    # 2. Use patchelf to clear the executable stack flag
+    # --clear-execstack is the modern equivalent to 'execstack -c'
+    find /opt/conda/envs/bio_modeling_env -name "libtorch_cpu.so" -exec patchelf --clear-execstack {} +
+
+    # 3. Clean up
+    /opt/conda/bin/conda clean -afy
+    rm -rf /opt/conda/pkgs/
+
+%runscript
+    #!/bin/bash
+    . /opt/conda/etc/profile.d/conda.sh
+    conda activate classicalgsg_env
+    cd /app || exit 1
+
+    #Set defaults if not provided
+    PORT=${PORT:-1800}
+
+    echo "========================================="
+    echo "ClassicalGSG Microservice"
+    echo "========================================="
+    echo "Starting FastAPI server..."
+    echo "Port: $PORT"
+    echo "========================================="
+    echo ""
+
+    # Run uvicorn
+    python3 main.py "$@"
+
+%test
+    . /opt/conda/etc/profile.d/conda.sh
+    conda activate classicalgsg_env
+    python3 -c "import fastapi; print('All dependencies installed successfully')"
