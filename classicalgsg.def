@@ -42,6 +42,13 @@ From: continuumio/miniconda3:latest
 
 %post 
     mkdir -p /app
+    # Update and install the compiler (g++) and other build tools
+    apt-get update && apt-get install -y \
+        git \
+        patchelf \
+        build-essential \
+        g++ \
+        gcc
     # Use patchelf instead of execstack
     apt-get update && apt-get install -y git patchelf
 
@@ -50,7 +57,7 @@ From: continuumio/miniconda3:latest
 
     # 2. Use patchelf to clear the executable stack flag
     # --clear-execstack is the modern equivalent to 'execstack -c'
-    find /opt/conda/envs/bio_modeling_env -name "libtorch_cpu.so" -exec patchelf --clear-execstack {} +
+    find /opt/conda/envs/classicalgsg_env -name "libtorch_cpu.so" -exec patchelf --clear-execstack {} +
 
     # 3. Clean up
     /opt/conda/bin/conda clean -afy
