@@ -1,0 +1,72 @@
+* ClassicalGSG: Prediction of logP Using Classical Molecular Dynamics Atomic Attributes and  Geometric Scattering Graphs
+
+This project is the implementation of a method called ~ClassicalGSG~
+and has introduced in [[https://onlinelibrary.wiley.com/doi/abs/10.1002/jcc.26519][ClassicalGSG: Prediction of logP using classical
+molecular force fields and geometric scattering for graphs]].  In this
+project, we aim to predict the partition coefficient value for the
+small molecules.
+
+Here, we use molecular features generated using a recently developed
+method called [[https://arxiv.org/abs/1810.03068][Geometric Scattering for Graphs]] (GSG).  The GSG method
+uses the graph structure of molecules to transform atomic attributes
+into index-variant molecular features.
+
+The atomic attributes are generated using two classical molecular
+dynamics force fields generator tool [[https://cgenff.umaryland.edu][CGenFF]] and [[https://ambermd.org/AmberTools.php][Ambertools]].  We train
+ClassicalGSG logP predictor models with neural networks (NNs) which,
+are implemented using [[https://pytorch.org][PyTorch]].
+
+
+* Installation
+
+You should use conda to make a new virtual environment:
+
+#+begin_src sh
+  conda create -n myenv python=3.7
+  conda activate myenv
+#+end_src
+
+Currently you must manually install some of the dependencies using
+conda. Do this first:
+
+#+begin_src sh
+  conda install -c pytorch pytorch
+  conda install -c conda-forge openbabel rdkit
+#+end_src
+
+
+To install from pip:
+
+#+BEGIN_SRC bash
+  pip install classicalgsg
+#+END_SRC
+
+
+You can install from the git repo as well:
+
+#+begin_src sh
+pip install git+https://github.com/ADicksonLab/ClassicalGSG.git
+#+end_src
+
+# TODO: inform about customizing pytorch installation
+
+* Usage
+
+To use our CGenFF ClassicalGSG logP predictor model run the following command:
+
+#+BEGIN_SRC bash
+ python -m LogpPredictor_CGenFF [molecule.mol2] [molecule.str]
+#+END_SRC
+
+To use our MMFF94 ClassicalGSG logP predictor model run the following command:
+
+#+BEGIN_SRC bash
+ python -m LogpPredictor_MMFF94  ['smiles']
+#+END_SRC
+
+You can generate CGenFF parameter files for your molecule using [[https://cgenff.umaryland.edu][CGenFF]]
+online server.
+
+* Dataset
+The logP dataset can be downloaded from [[https://doi.org/10.5281/zenodo.4531015][Zenodo]].
+Zenodo DOI: 10.5281/zenodo.4531015

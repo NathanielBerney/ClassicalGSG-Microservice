@@ -16,7 +16,7 @@ from classicalgsg.molreps_models.gsg import GSG
 from classicalgsg.classicalgsg import CGenFFGSG, OBFFGSG
 from classicalgsg.molreps_models.utils import scop_to_boolean
 
-PRETRAINED_MODEL_PATH = './classicalgsg/ClassicalGSG/src/classicalgsg/pretrained_models/'
+PRETRAINED_MODEL_PATH = './ClassicalGSG/src/classicalgsg/pretrained_models/'
 CGENFFGSG_MODEL = 'model_4_zfs_CGenFF.pkl'
 CGENFFGSG_SCALAR = 'std_scaler_CGenFF.sav'
 OBFFGSG_MODEL = 'model_4_zfs_MMFF.pkl'
