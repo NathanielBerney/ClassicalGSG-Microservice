@@ -38,7 +38,7 @@ From: continuumio/miniconda3:latest
     ClassicalGSG_handler.py /app/ClassicalGSG_handler.py
     environment.yml /app/environment.yml
     main.py /app/main.py
-    classicalgsg /app/classicalgsg
+    ClassicalGSG /app/ClassicalGSG
 
 %post 
     mkdir -p /app
